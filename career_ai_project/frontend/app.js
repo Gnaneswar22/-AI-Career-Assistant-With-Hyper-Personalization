@@ -9,6 +9,7 @@ const Store = (() => {
 		resume: { name: '', education: '', experience: '', skills: '', projects: '' },
 		jobsApplied: [],
 		community: { posts: [] },
+		mentor: { messages: [] },
 	};
 
 	function load() {
@@ -44,6 +45,8 @@ const Store = (() => {
 		applyJob(job) { updateKey('jobsApplied', arr => [...arr, job]); },
 		saveResume(data) { update({ resume: { ...state.resume, ...data } }); },
 		updateProfile(data) { update({ profile: { ...state.profile, ...data } }); },
+		pushMentorMessage(role, content) { updateKey('mentor', m => ({ ...m, messages: [...(m.messages || []), { role, content }] })); },
+		clearMentor() { updateKey('mentor', _ => ({ messages: [] })); },
 	};
 
 	return { getState, setState, update, updateKey, subscribe, Actions };
@@ -223,7 +226,6 @@ function renderDashboard(root) {
 				<div class="badge ${statusClass}">${status}</div>
 			`));
 		});
-		s2.appendChild(grid);
 	}
 
 	const s3 = document.createElement('section');
@@ -360,22 +362,60 @@ function renderJobs(root) {
 }
 
 /* Mentor */
+async function callMentorAPI(messages) {
+	const resp = await fetch('http://localhost:8000/api/chat', {
+		method: 'POST',
+		headers: { 'Content-Type': 'application/json' },
+		body: JSON.stringify({ messages })
+	});
+	if (!resp.ok) throw new Error(`Chat error: ${resp.status}`);
+	return resp.json();
+}
+
 function renderMentor(root) {
 	root.innerHTML = `<h2>AI Mentor</h2>`;
-	const chat = document.createElement('div'); chat.className = 'card';
-	chat.innerHTML = `
-		<div style="height:300px; overflow:auto; display:grid; gap:8px">
-			<div class="badge">Mentor: How can I help you today?</div>
-		</div>
-		<div class="row" style="margin-top:10px">
-			<input id="mentorInput" style="flex:1" placeholder="Ask the AI mentor..." />
-			<button class="btn primary">Send</button>
-			<a class="btn secondary" href="#/resume">Generate Resume</a>
-			<a class="btn secondary" href="#/roadmaps">View Roadmap</a>
-			<a class="btn secondary" href="#/projects">Suggest Project</a>
-		</div>
-	`;
-	root.appendChild(chat);
+	const wrap = document.createElement('div'); wrap.className = 'card';
+	const { mentor } = Store.getState();
+	const chatList = document.createElement('div');
+	chatList.style.height = '300px'; chatList.style.overflow = 'auto'; chatList.style.display = 'grid'; chatList.style.gap = '8px';
+	mentor.messages.forEach(m => {
+		const bubble = document.createElement('div');
+		bubble.className = 'badge'; bubble.textContent = `${m.role === 'assistant' ? 'Mentor' : 'You'}: ${m.content}`;
+		chatList.appendChild(bubble);
+	});
+	const inputRow = document.createElement('div'); inputRow.className = 'row'; inputRow.style.marginTop = '10px';
+	const input = document.createElement('input'); input.placeholder = 'Ask the AI mentor...'; input.style.flex = '1';
+	const sendBtn = document.createElement('button'); sendBtn.className = 'btn primary'; sendBtn.textContent = 'Send';
+	const quicks = [
+		['Generate Resume', '/resume'],
+		['View Roadmap', '/roadmaps'],
+		['Suggest Project', '/projects'],
+	];
+	const quickWrap = document.createElement('div'); quickWrap.className = 'row';
+	quicks.forEach(([label, to]) => { const a = document.createElement('a'); a.className = 'btn secondary'; a.href = `#${to}`; a.textContent = label; quickWrap.appendChild(a); });
+
+	async function sendMessage() {
+		const text = (input.value || '').trim();
+		if (!text) return;
+		Store.Actions.pushMentorMessage('user', text);
+		renderMentor(root); // optimistic update
+		try {
+			const messages = [...Store.getState().mentor.messages, { role: 'user', content: text }].slice(-20);
+			const res = await callMentorAPI(messages);
+			Store.Actions.pushMentorMessage(res.role || 'assistant', res.content || '');
+			renderMentor(root);
+		} catch (e) {
+			Store.Actions.pushMentorMessage('assistant', 'Sorry, I could not respond.');
+			renderMentor(root);
+		}
+	}
+
+	sendBtn.onclick = sendMessage;
+	input.addEventListener('keydown', (e) => { if (e.key === 'Enter') sendMessage(); });
+	inputRow.appendChild(input); inputRow.appendChild(sendBtn);
+
+	wrap.appendChild(chatList); wrap.appendChild(inputRow); wrap.appendChild(quickWrap);
+	root.appendChild(wrap);
 }
 
 /* Community */
