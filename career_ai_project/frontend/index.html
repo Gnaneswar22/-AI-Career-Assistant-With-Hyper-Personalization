@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<title>CareerAI</title>
+	<link rel="stylesheet" href="styles.css" />
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+</head>
+<body>
+	<div id="app" class="app">
+		<!-- Sidebar -->
+		<aside class="sidebar">
+			<div class="logo">
+				<i class="fa-solid fa-compass"></i>
+				<span>CareerAI</span>
+			</div>
+			<nav class="nav-links">
+				<a href="#/" class="nav-link"><i class="fa-solid fa-house"></i><span>Home</span></a>
+				<a href="#/dashboard" class="nav-link"><i class="fa-solid fa-grid"></i><span>Dashboard</span></a>
+				<a href="#/profile" class="nav-link"><i class="fa-solid fa-user"></i><span>Profile</span></a>
+				<a href="#/roadmaps" class="nav-link"><i class="fa-solid fa-route"></i><span>Roadmaps</span></a>
+				<a href="#/courses" class="nav-link"><i class="fa-solid fa-book"></i><span>Courses</span></a>
+				<a href="#/projects" class="nav-link"><i class="fa-solid fa-diagram-project"></i><span>Projects</span></a>
+				<a href="#/jobs" class="nav-link"><i class="fa-solid fa-briefcase"></i><span>Jobs</span></a>
+				<a href="#/mentor" class="nav-link"><i class="fa-solid fa-robot"></i><span>Mentor</span></a>
+				<a href="#/community" class="nav-link"><i class="fa-solid fa-users"></i><span>Community</span></a>
+			</nav>
+		</aside>
+
+		<!-- Main area -->
+		<div class="main">
+			<header class="topbar">
+				<div class="search">
+					<i class="fa-solid fa-magnifying-glass"></i>
+					<input id="globalSearch" type="search" placeholder="Search courses, jobs, projects..." />
+				</div>
+				<div class="top-actions">
+					<button class="icon-btn" title="Notifications"><i class="fa-regular fa-bell"></i></button>
+					<button class="icon-btn" title="Profile"><i class="fa-regular fa-circle-user"></i></button>
+				</div>
+			</header>
+
+			<main id="view" class="view">
+				<!-- Landing (default route) -->
+				<section class="landing">
+					<div class="landing-hero">
+						<h1>Your Hyper-Personalized Career GPS</h1>
+						<p>Plan roadmaps, learn courses, build projects, and land jobs with AI guidance.</p>
+						<div class="cta-buttons">
+							<a class="btn primary" href="#/dashboard">Login</a>
+							<a class="btn secondary" href="#/dashboard">Sign Up</a>
+						</div>
+					</div>
+				</section>
+			</main>
+		</div>
+	</div>
+
+	<script src="app.js"></script>
+	<script src="profile.js"></script>
+	<script src="courses.js"></script>
+	<script src="jobs.js"></script>
+	<script src="resume.js"></script>
+	<script src="projects.js"></script>
+	<script src="interview.js"></script>
+</body>
+</html>
