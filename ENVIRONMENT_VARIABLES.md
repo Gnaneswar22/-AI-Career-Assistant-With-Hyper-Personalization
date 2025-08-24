@@ -162,8 +162,7 @@ PRODUCTION_URL=https://your-domain.com
 # CDN URL for static assets
 CDN_URL=https://cdn.your-domain.com
 ```
-OPENROUTER_API_KEY="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"
-MODEL_OUTPUT_DIR = "./career-ai-roadmap-model"
+
 ## How to Get API Keys
 
 ### Job Board APIs

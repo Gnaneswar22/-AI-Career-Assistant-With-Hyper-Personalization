@@ -36,7 +36,7 @@ from transformers import (
 st.set_page_config(page_title="Career AI Assistant", layout="wide")
 
 # --- Global Variables & API Keys ---
-OPENROUTER_API_KEY = "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"
+OPENROUTER_API_KEY = "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"
 MODEL_OUTPUT_DIR = "./career-ai-roadmap-model"
 
 # --- Caching for Model Training ---
